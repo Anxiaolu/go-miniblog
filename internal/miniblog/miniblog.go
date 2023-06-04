@@ -5,6 +5,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var cfgFile string
+
 // NewMiniBlogCommand 创建一个 *cobra.Command对象之后，可以使用 Command 对象的 Execute 来启动应用程序。
 func NewMiniBlogCommand() *cobra.Command {
 	cmd := &cobra.Command{
@@ -33,6 +35,16 @@ Find more miniblog information at:
 			return nil
 		},
 	}
+
+	//以下设置，使得 initConfig 函数在每个命令运行时都会被调用以读取配置
+	cobra.OnInitialize(initConfig)
+
+	// Cobra 支持持久性标志(PersistentFlag)，该标志可用于它所分配的命令以及该命令下的每个子命令
+	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "The path to the miniblog configuration file. Empty string for no configuration file.")
+
+	// Cobra 也支持本地标志，本地标志只能在其所绑定的命令上使用
+	cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
 	return cmd
 }
 
